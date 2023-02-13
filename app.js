@@ -2,43 +2,27 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const app = express();
-
-//Middleware
-app.use(bodyParser.json());
-app.use(morgan("tiny"));
+const cors = require("cors");
 
 require("dotenv/config");
+
+const app = express();
+
+app.use(cors());
+app.options("*", cors());
 
 const PORT = process.env.PORT;
 const api = process.env.API;
 const MONGO_URI = process.env.MONGO_URI;
 
-app.get(`/${api}/products`, (req, res) => {
-  const products = [
-    {
-      id: "1",
-      name: "Iphone 11",
-      price: "47000 Rs",
-    },
-    {
-      id: "2",
-      name: "Iphone 12",
-      price: "55000 Rs",
-    },
-    {
-      id: "3",
-      name: "Iphone 13",
-      price: "63000 Rs",
-    },
-  ];
-  res.send(products);
-});
+//Middleware
+app.use(bodyParser.json());
+app.use(morgan("tiny"));
 
-app.post(`/${api}/products`, (req, res) => {
-  const newProduct = req.body;
-  res.send(newProduct);
-});
+//Routes
+const productsRoutes = require("./routers/products");
+
+app.use(`/${api}/products`, productsRoutes);
 
 mongoose
   .connect(`${MONGO_URI}`, {
