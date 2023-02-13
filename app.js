@@ -20,9 +20,11 @@ app.use(bodyParser.json());
 app.use(morgan("tiny"));
 
 //Routes
-const productsRoutes = require("./routers/products");
+const productsRoutes = require("./routers/products.js");
+const categoriesRoutes = require("./routers/categories.js");
 
 app.use(`/${api}/products`, productsRoutes);
+app.use(`/${api}/categories`, categoriesRoutes);
 
 mongoose
   .connect(`${MONGO_URI}`, {
