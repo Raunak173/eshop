@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const authJwt = require("./helpers/jwt");
+const errorHandler = require("./helpers/errorHandler");
 
 require("dotenv/config");
 
@@ -18,6 +20,8 @@ const MONGO_URI = process.env.MONGO_URI;
 //Middleware
 app.use(bodyParser.json());
 app.use(morgan("tiny"));
+app.use(authJwt());
+app.use(errorHandler);
 
 //Routes
 const productsRoutes = require("./routers/products.js");

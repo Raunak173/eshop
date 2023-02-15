@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 
-router.get(`/`, async (req, res) => {
+router.get("/", async (req, res) => {
   const userList = await User.find().select("-passwordHash");
   //   const userList = await User.find().select(
   //     "+name +phone +email -passwordHash"
@@ -16,11 +16,11 @@ router.get(`/`, async (req, res) => {
   res.send(userList);
 });
 
-router.post("/", async (req, res) => {
+router.post("/register", async (req, res) => {
   let user = new User({
     name: req.body.name,
     email: req.body.email,
-    passwordHash: bcrypt.hashSync(req.body.passwordHash, 10), //Here second para is used as salt
+    passwordHash: bcrypt.hashSync(req.body.password, 10), //Here second para is used as salt
     phone: req.body.phone,
     isAdmin: req.body.isAdmin,
     street: req.body.street,
@@ -57,6 +57,35 @@ router.post("/login", async (req, res) => {
   } else {
     res.status(400).send("password is wrong!");
   }
+});
+
+router.delete("/:id", (req, res) => {
+  User.findByIdAndRemove(req.params.id)
+    .then((user) => {
+      if (user) {
+        return res
+          .status(200)
+          .json({ success: true, message: "the user is deleted!" });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: "user not found!" });
+      }
+    })
+    .catch((err) => {
+      return res.status(500).json({ success: false, error: err });
+    });
+});
+
+router.get(`/get/count`, async (req, res) => {
+  const userCount = await User.countDocuments((count) => count);
+
+  if (!userCount) {
+    res.status(500).json({ success: false });
+  }
+  res.send({
+    userCount: userCount,
+  });
 });
 
 module.exports = router;
