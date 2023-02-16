@@ -27,10 +27,12 @@ app.use(errorHandler);
 const productsRoutes = require("./routers/products.js");
 const categoriesRoutes = require("./routers/categories.js");
 const userRoutes = require("./routers/users");
+const orderRoutes = require("./routers/orders");
 
 app.use(`/${api}/products`, productsRoutes);
 app.use(`/${api}/categories`, categoriesRoutes);
 app.use(`/${api}/users`, userRoutes);
+app.use(`/${api}/orders`, orderRoutes);
 
 mongoose
   .connect(`${MONGO_URI}`, {
